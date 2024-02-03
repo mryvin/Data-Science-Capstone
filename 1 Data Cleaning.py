@@ -3,11 +3,17 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 
+######################################################################################################################
+# Reading and Preprocessing Data
+######################################################################################################################
+
 # Read CSV file
 airbnb = pd.read_csv('airbnb_v1.csv', skiprows=1, dtype='str')
 airbnb = airbnb.drop('Unnamed: 15', axis=1)
 
+######################################################################################################################
 # Numerical Columns
+######################################################################################################################
 
 # Clean 'id' column
 airbnb['id'] = [re.sub('[^0-9]', '', str(x)) for x in airbnb['id']]
@@ -46,7 +52,9 @@ airbnb['latitude'] = airbnb['latitude'].astype(float)
 airbnb['longitude'] = [re.sub('[^0-9.-]', '', str(x)) for x in airbnb['longitude']]
 airbnb['longitude'] = airbnb['longitude'].astype(float)
 
+######################################################################################################################
 # Categorical Columns
+######################################################################################################################
 
 # Clean 'floor' column
 floor_mapping = {
@@ -87,7 +95,9 @@ airbnb['neighbourhood'] = [re.sub('Queens-Queens','',str(x)) for x in airbnb['ne
 airbnb['neighbourhood'] = [re.sub('Staten Island-Staten Island|, Staten Island','',str(x)) for x in airbnb['neighbourhood']]
 airbnb['neighbourhood'] = airbnb['neighbourhood'].replace('nan',np.nan,regex=True)
 
+######################################################################################################################
 # Date Column
+######################################################################################################################
 
 ## Clean 'last review (date)' column
 airbnb['last review (date)'] = [re.sub('nan','3000-01-01',str(x)) for x in airbnb['last review (date)']]
@@ -96,6 +106,8 @@ airbnb['last review (date)']=airbnb['last review (date)'].apply(lambda x:datetim
 airbnb['last review (date)']=airbnb['last review (date)'].apply(lambda x:datetime.strftime(x,"%Y-%m-%d"))
 airbnb = airbnb.replace('3000-01-01',np.nan,regex=True)
 
+######################################################################################################################
 # Exporting CSV
+######################################################################################################################
 
 airbnb.to_csv("Cleaned_Airbnb.csv")
